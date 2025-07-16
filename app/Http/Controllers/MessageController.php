@@ -11,7 +11,7 @@ class MessageController extends Controller
 {
     public function adminShow()
     {
-        $messages = Message::with('user')->latest()->get();
+        $messages = Message::withTrashed()->with('user')->latest()->get();
         return Inertia::render('users/messages/index', [
             'messages' => $messages,
         ]);
@@ -124,7 +124,33 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        //
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+            $message->delete(); // soft delete
+            return back()->with('success', 'Ticket archived (soft deleted) successfully.');
+        }
+
+        if ($user->id === $message->user_id) {
+            $message->forceDelete(); // permanently delete
+            return back()->with('success', 'Ticket permanently deleted.');
+        }
+
+        abort(403, 'Unauthorized');
+    }
+
+    public function restore($id)
+    {
+        $user = Auth::user();
+
+        if (!$user->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $message = Message::onlyTrashed()->findOrFail($id);
+        $message->restore();
+
+        return back()->with('success', 'Ticket restored successfully.');
     }
 
     public function close(Message $message)

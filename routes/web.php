@@ -19,7 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // $user = auth()->user();
         // Check if the user has the 'admin' role
         if ($user->hasRole('admin')) {
-            $messages = Message::with('user')->orderBy('created_at', 'asc')->get();
+            $messages = Message::withTrashed()->with('user')->orderBy('created_at', 'asc')->get();
             return Inertia::render('dashboard', [
                 'messages' => $messages,
             ]);
@@ -45,12 +45,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('admin.messages.index');
 
 
+
     //Notifications
     Route::get('/notifications', [MessageController::class, 'unreadReplies'])->name('notifications');
     //Messages for user
     Route::resource('messages', MessageController::class)->except(['update']);
     Route::post('messages/{message}', [MessageController::class, 'update'])->name('messages.update');
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
+    //delete message
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    //restore message
+    Route::patch('/messages/{message}/restore', [MessageController::class, 'restore'])
+        ->middleware('role:admin')
+        ->name('messages.restore');
+
+
+
+
 
     Route::patch('/messages/{message}/close', [MessageController::class, 'close'])
         ->name('messages.close');

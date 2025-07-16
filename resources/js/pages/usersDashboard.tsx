@@ -1,8 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
-
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
     { title: 'Messages', href: '/messages' },
@@ -93,9 +92,24 @@ export default function usersDashboard({ messages = [] }: UsersDashboardProps) {
                                             <a href={`/messages/${message.id}`} className="block text-green-600 hover:underline dark:text-green-500">
                                                 View
                                             </a>
-                                            <a href="#" className="block text-red-600 hover:underline dark:text-red-500">
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm('Are you sure you want to delete this ticket?')) {
+                                                        router.delete(route('messages.destroy', message.id), {
+                                                            preserveScroll: true,
+                                                            onSuccess: () => {
+                                                                console.log('Ticket deleted!');
+                                                            },
+                                                            onError: (errors) => {
+                                                                console.error('Delete failed:', errors);
+                                                            },
+                                                        });
+                                                    }
+                                                }}
+                                                className="block text-red-600 hover:underline dark:text-red-500"
+                                            >
                                                 Delete
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

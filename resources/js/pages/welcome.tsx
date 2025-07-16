@@ -49,8 +49,8 @@ export default function Welcome() {
                                     Submit, track, and resolve your concerns—all in one place.
                                 </p>
                                 <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                                    <a
-                                        href="#"
+                                    <Link
+                                        href={route('register')}
                                         className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-center text-base font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                                     >
                                         <svg
@@ -68,7 +68,7 @@ export default function Welcome() {
                                             />
                                         </svg>
                                         Register Now!
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,15 @@ export default function Welcome() {
                         </div>
                     </section>
                 </div>
-                <div className="hidden h-14.5 lg:block">asdasd</div>
+                <div className="mt-8 hidden h-14.5 lg:block">
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+                        © {new Date().getFullYear()}{' '}
+                        <a href="https://flowbite.com/" className="hover:underline">
+                            Arzatech
+                        </a>
+                        . All Rights Reserved.
+                    </span>
+                </div>
             </div>
         </>
     );

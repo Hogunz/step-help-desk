@@ -10,6 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Show({ messages }) {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [zoomed, setZoomed] = useState(false);
 
     const handleCloseTicket = (e) => {
         e.preventDefault();
@@ -70,15 +71,15 @@ export default function Show({ messages }) {
 
                         {/* Modal Viewer */}
                         {selectedImage && (
-                            <div className="bg-opacity-70 fixed inset-0 z-50 flex items-center justify-center bg-black">
-                                <div className="relative w-full max-w-3xl p-4">
+                            <div className="bg-opacity-70 fixed inset-0 z-[9999] flex items-center justify-center bg-black">
+                                <div className="relative max-h-[90vh] w-full max-w-3xl overflow-auto rounded-lg bg-white p-4 shadow-lg">
                                     <button
                                         onClick={() => setSelectedImage(null)}
-                                        className="absolute top-4 right-4 rounded bg-white px-3 py-1 text-sm font-medium text-black hover:bg-gray-200"
+                                        className="absolute top-4 right-4 z-10 rounded bg-white px-3 py-1 text-sm font-medium text-black shadow hover:bg-gray-200"
                                     >
                                         ✕ Close
                                     </button>
-                                    <img src={selectedImage} alt="Preview" className="w-full rounded shadow-lg" />
+                                    <img src={selectedImage} alt="Preview" className="mx-auto max-h-[80vh] w-auto rounded object-contain" />
                                 </div>
                             </div>
                         )}

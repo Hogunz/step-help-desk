@@ -1,8 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -21,6 +20,7 @@ type Message = {
     message: string;
     ticket_status: string;
     created_at: string;
+    deleted_at?: string | null; // ← Add this line
     // name?: string; // Uncomment if you use the name field
 };
 
@@ -117,12 +117,46 @@ export default function usersDashboard({ messages = [] }: UsersDashboardProps) {
                                                 Edit
                                             </a>
                                         </div> */}
-                                        <div>
-                                            {' '}
-                                            <a href="#" className="font-medium text-red-600 hover:underline dark:text-red-500">
+                                        {message.deleted_at ? (
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm('Restore this ticket?')) {
+                                                        router.patch(route('messages.restore', message.id), {
+                                                            preserveScroll: true,
+                                                            onSuccess: () => {
+                                                                console.log('Ticket restored!');
+                                                            },
+                                                            onError: (errors) => {
+                                                                console.error('Restore failed:', errors);
+                                                            },
+                                                        });
+                                                    }
+                                                }}
+                                                className="block text-blue-600 hover:underline dark:text-blue-400"
+                                            >
+                                                Restore
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm('Delete this ticket?')) {
+                                                        router.delete(route('messages.destroy', message.id), {
+                                                            preserveScroll: true,
+                                                            onSuccess: () => {
+                                                                console.log('Ticket deleted!');
+                                                            },
+                                                            onError: (errors) => {
+                                                                console.error('Delete failed:', errors);
+                                                            },
+                                                        });
+                                                    }
+                                                }}
+                                                className="block text-red-600 hover:underline dark:text-red-500"
+                                            >
                                                 Delete
-                                            </a>
-                                        </div>
+                                            </button>
+                                        )}
+
                                         <div>
                                             {' '}
                                             <a
